@@ -70,6 +70,8 @@ class RHYTHMGAME_API ASongPlayerPawn : public APawn
 	float secondsPerBeat;
 
 	float lastBeat;
+
+	float totalScore;
 	
 	//changed at runtime, gets the current beat.
 	UPROPERTY()
@@ -101,5 +103,7 @@ public:
 	void StartSong();
 
 	void RegisterNoteLane(ANoteLane* Lane);
+
+	void AddScore(float score);
 
 };

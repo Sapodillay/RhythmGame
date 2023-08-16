@@ -55,7 +55,7 @@ void ANoteLane::Tick(float DeltaTime)
 
 				if (NoteTuple.Value >= 1)
 				{
-					//Handle delete note or recycle.
+					//Handle delete note or recycle.#
 					AActor* TempReference = NoteTuple.Key;
 					NotesToMove.Remove(NoteTuple.Key);
 					TempReference->Destroy();
@@ -88,6 +88,7 @@ void ANoteLane::HandleInput()
 		ANoteBlock* Note = Cast<ANoteBlock>(SelectedActor);
 		if (Note)
 		{
+			HandleScore(FVector::Distance(Note->GetActorLocation(), JudgementArea->GetComponentLocation()));
 			NotesToMove.Remove(Note);
 			Note->Destroy();
 			//Score calculated based on distance from judgement zone.
@@ -100,6 +101,15 @@ void ANoteLane::HandleInput()
 void ANoteLane::OnBeginOverlap(AActor* OverlapActor)
 {
 	SelectedActor = OverlapActor;
+}
+
+void ANoteLane::HandleScore(float distance)
+{
+	ASongPlayerPawn* PlayerPawn =  Cast<ASongPlayerPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (PlayerPawn)
+	{
+		PlayerPawn->AddScore(200 - distance);
+	}
 }
 
 

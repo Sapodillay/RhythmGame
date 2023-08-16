@@ -145,3 +145,9 @@ void ASongPlayerPawn::RegisterNoteLane(ANoteLane* Lane)
 	NoteLanes.Add(Lane);
 }
 
+void ASongPlayerPawn::AddScore(float score)
+{
+	totalScore += score;
+	GEngine->AddOnScreenDebugMessage(1, 15.0f, FColor::Yellow,   FString::Printf(TEXT("Score: %f"), totalScore));	
+}
+

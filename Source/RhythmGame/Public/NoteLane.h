@@ -48,4 +48,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnBeginOverlap(AActor* OverlapActor);
 
+	void HandleScore(float distance);
+
 };
