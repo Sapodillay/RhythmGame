@@ -46,13 +46,26 @@ void ANoteLane::Tick(float DeltaTime)
 	{
 		if(!NotesToMove.IsEmpty())
 		{
-			for (auto NoteTuple : NotesToMove)
+			for (auto& NoteTuple : NotesToMove)
 			{
 				
-				NoteTuple.Value += 1.0f;
-				FVector Location = NotePath->GetLocationAtDistanceAlongSpline(NoteTuple.Value, ESplineCoordinateSpace::World);
+				FVector Location = NotePath->GetLocationAtDistanceAlongSpline(FMath::Lerp(0, NotePath->GetSplineLength(), NoteTuple.Value), ESplineCoordinateSpace::World);
 				GEngine->AddOnScreenDebugMessage(2, 15.0f, FColor::Yellow,   FString::Printf(TEXT("Distance: %f"), NoteTuple.Value));	
 				NoteTuple.Key->SetActorLocation(Location);
+
+				if (NoteTuple.Value >= 1)
+				{
+					//Handle delete note or recycle.
+					AActor* TempReference = NoteTuple.Key;
+					NotesToMove.Remove(NoteTuple.Key);
+					TempReference->Destroy();
+				}
+				else
+				{
+					NoteTuple.Value += (DeltaTime * (0.571));
+				}
+				
+				
 			}
 		}
 	}
@@ -67,4 +80,26 @@ void ANoteLane::SpawnNote()
 	NotesToMove.Add(Note, 0.0f);
 	
 }
+
+void ANoteLane::HandleInput()
+{
+	if (SelectedActor)
+	{
+		ANoteBlock* Note = Cast<ANoteBlock>(SelectedActor);
+		if (Note)
+		{
+			NotesToMove.Remove(Note);
+			Note->Destroy();
+			//Score calculated based on distance from judgement zone.
+		}
+		
+	}
+}
+
+//Called from blueprint, Judgement Area overlap
+void ANoteLane::OnBeginOverlap(AActor* OverlapActor)
+{
+	SelectedActor = OverlapActor;
+}
+
 

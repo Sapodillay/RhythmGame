@@ -11,14 +11,9 @@
 void ASongPlayerPawn::Row1()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ROW 1"));
-	if (!NoteLanes.IsEmpty())
+	if (NoteLanes.IsValidIndex(0))
 	{
-		NoteLanes[0]->SpawnNote();
-		UE_LOG(LogTemp, Warning, TEXT("Spawned note"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to spawn note"));
+		NoteLanes[0]->HandleInput();
 	}
 	
 }
@@ -26,16 +21,28 @@ void ASongPlayerPawn::Row1()
 void ASongPlayerPawn::Row2()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ROW 2"));
+	if (NoteLanes.IsValidIndex(1))
+	{
+		NoteLanes[1]->HandleInput();
+	}
 }
 
 void ASongPlayerPawn::Row3()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ROW 3"));
+	if (NoteLanes.IsValidIndex(2))
+	{
+		NoteLanes[2]->HandleInput();
+	}
 }
 
 void ASongPlayerPawn::Row4()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ROW 4"));
+	if (NoteLanes.IsValidIndex(3))
+	{
+		NoteLanes[3]->HandleInput();
+	}
 }
 
 // Sets default values
@@ -75,13 +82,32 @@ void ASongPlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (songPositionInBeats < FMath::Floor(songPosition / secondsPerBeat))
+	{
+		//New beat, spawn news beats.
+	}
+	
 	if (isPlaying)
 	{
 		songPosition += DeltaTime;
 		songPositionInBeats = FMath::Floor(songPosition / secondsPerBeat);
+
+		if (songPositionInBeats > lastBeat)
+		{
+			for (auto Lane : NoteLanes)
+			{
+				if (FMath::RandBool())
+				{
+					Lane->SpawnNote();
+				}
+			}
+		}
+		
 	}
 
 	
+
+	lastBeat = songPositionInBeats;
 	GEngine->AddOnScreenDebugMessage(1, 15.0f, FColor::Yellow,   FString::Printf(TEXT("Beat: %f"), songPositionInBeats));	
 }
 

@@ -68,6 +68,8 @@ class RHYTHMGAME_API ASongPlayerPawn : public APawn
 	float songPositionInBeats = 0;
 
 	float secondsPerBeat;
+
+	float lastBeat;
 	
 	//changed at runtime, gets the current beat.
 	UPROPERTY()

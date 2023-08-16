@@ -25,6 +25,8 @@ class RHYTHMGAME_API ANoteLane : public AActor
 
 	UPROPERTY(EditDefaultsOnly)
 	float notespeed = 100.0f;
+
+	AActor* SelectedActor;
 	
 
 public:	
@@ -40,5 +42,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SpawnNote();
+
+	void HandleInput();
+
+	UFUNCTION(BlueprintCallable)
+	void OnBeginOverlap(AActor* OverlapActor);
 
 };
